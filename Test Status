@@ -1,0 +1,30 @@
+Topology
+---------
+Windows 11 Pro Edition (Joined to extrqa2012.com domain) -> EXOS Switch -> FR 3.2.2 -> Locally authenticating
+
+1) TLS
+: Successful
+
+2) PEAP
+: inner-tunnel should be modified (uncommenting eap section)
+: Successful
+
+3) TEAP (Primary auth: TLS, Secondary: None) with private identifier: anonymous
+: New inner-tunnel received on Feb 16, 2023
+: Successful
+
+4) Starting up Windows 11 with TEAP (3) configured => Further discussion is needed (see below Note).
+: Initial Auth is failing during the login process
+: After logging to domain, it's successful.
+
+ Note: Response from Alan
+  The Windows system is sending an empty EAP-Identity field.
+  FreeRADIUS requires the EAP supplicant to send an identity.  Without the identity, we have no way of knowing who is being authenticated.
+  We didn't see this in our tests with Windows, so I'm not sure what's going wrong here.   And in the end, this an issue with the Windows system.
+  On our side, we could remove that check for a non-empty identity.  However, that would mean there would need to be some other way to identify the system being authenticated.
+  
+5) TEAP (Primary auth: TLS) with private identifier: someone@example.com
+: Further testing is required.
+
+6) TEAP (Primary auth: MSCHAPV2, Secondary: None) with private identifier: anonymous
+: In testing.
